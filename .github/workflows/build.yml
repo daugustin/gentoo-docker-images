@@ -6,6 +6,9 @@ on:
     - cron: '1 0 * * *'
   workflow_dispatch:
 
+env:
+  ORG: gentoo
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,6 +33,10 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
+      - name: Tag Image
+        env:
+          DOCKER_CLI_EXPERIMENTAL: enabled
+        run: docker tag "${ORG}/${TARGET/-/:}" "ghcr.io/${GITHUB_REPOSITORY_OWNER}/gentoo-docker-images:${TARGET}"
       - name: Push image
         env:
           DOCKER_CLI_EXPERIMENTAL: enabled
